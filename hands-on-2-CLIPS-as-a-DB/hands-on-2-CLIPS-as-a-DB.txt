@@ -1,0 +1,48 @@
+hands on 2
+
+
+(deffacts illness "some facts about illnesses"
+	(illness influenza fever fatigue cough aches)
+	(illness pneumonia breathing pain fever cough)	
+	(illness diabetes thirst weight-loss fatigue dizziness)
+	(illness asthma wheezing breathless tightness cough)
+	(illness migraine short-sight pain headache nausea)
+	(illness hypertension headache dizziness fatigue blurred-vision))
+
+(reset)
+
+(facts)
+
+(defrule detail-sickness "detail an illness"
+	(illness  ?name ?sign1 ?sign2 ?symp1 ?symp2)
+=>
+	(printout t "Illness: " ?name ". Signs: " ?sign1 ", " ?sign2 ". Symptons: " ?symp1 ", " ?symp2 crlf))
+
+(defrule detail-signs "detail an illness's signs"
+	(illness  ?name ?sign1 ?sign2 ?symp1 ?symp2)
+=>
+	(printout t "Illness " ?name " presents signs: " ?sign1 " and " ?sign2 "." crlf))
+
+(defrule detail-symptons "detail an illness's symptons"
+	(illness  ?name ?sign1 ?sign2 ?symp1 ?symp2)
+=>
+	(printout t "Illness " ?name " presents symptons: " ?symp1 " and " ?symp2 "." crlf))
+
+(rules)
+
+(run)
+
+(defrule delete-sickness "delete an illness"
+	?factId <- (delete-illness ?id)
+=>
+	(retract ?id)
+	(retract ?factId)
+	(printout t "Deleted illness with id: " ?id crlf))
+
+(rules)
+
+(assert (delete-illness 1))
+
+(run)
+ 
+(facts)
