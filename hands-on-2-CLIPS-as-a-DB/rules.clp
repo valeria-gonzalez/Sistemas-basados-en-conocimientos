@@ -1,34 +1,8 @@
-; Hands on 2
 
+;; Define a rule to choose an option (search for illness, signs, symptoms or delete)
 
-; ---------------------  START: Insert Facts   ---------------------------------------------------------------
-
-(deffacts illness  ; deffacts inserts multiple facts at once
-
-	" Some facts about illnesses "
-	
-	; name, sign1, sign2, symptom1, symptom2  
- 
-	(illness influenza fever fatigue cough aches)
-	(illness pneumonia breathing pain fever cough)	
-	(illness diabetes thirst weight-loss fatigue dizziness)
-	(illness asthma wheezing breathless tightness cough)
-	(illness migraine short-sight pain headache nausea)
-	(illness hypertension headache dizziness fatigue blurred-vision)
-)
-
-(reset) ; reset removes old facts but not old rules
-
-(facts)
-
-; ---------------------  END: INSERT FACTS   --------------------------------------------------------------
-
-
-; --------------------------------------------START: Start of program ---------------------------------------
 
 (defrule start-program
-
-	" Start the program "
 
 	?start <- (start-program)
 =>
@@ -62,9 +36,12 @@
 	(retract ?start)                  
 ) 
 
-(defrule choose-option
 
-	" Redirect to the correct option "
+
+;; Define a rule to initiate the option path and assert its corresponding rule
+
+
+(defrule choose-option
 
 	?option <- (option ?letter)
 =>
@@ -94,14 +71,12 @@
 	(retract ?option)                  
 ) 
 
-; -------------------------------------------- END: Start of program ---------------------------
 
 
-; ----------------------  START: Detail Symptoms   ---------------------------------------------
+;; Define a rule to return an illness's symptoms given its name
+
 
 (defrule find-symptoms
-
-	" Find symptoms by illness name "
 	
 	?query <- (detail-symptoms)
 =>
@@ -150,137 +125,12 @@
 	(retract ?query)
 )
 
-(defrule print-values 
-
-	" Detail an illness's symptoms or signs "
-
-	?query <- (print-vals ?name ?val1 ?val2)
-=>
-	(if (neq ?name Unknown)
-	    then
-		(printout t crlf
-			    "------------------------------------------------" 
-			    crlf
-			    " " ?name 
-			    " presents: " ?val1 
-		    	    " and " ?val2 "." 
-			    crlf
-			    "------------------------------------------------" 
-			    crlf crlf)
-	    else
-		(printout t crlf 
-			    "------------------------------------------------" 
-			    crlf
-			    " Illness not found."
-			    crlf
-			    "------------------------------------------------" 
-			    crlf crlf)
-		
-	)
-	
-	(retract ?query)
-)
-
-; ------------------------  END: Detail Symptoms   ---------------------------------------------
 
 
+;; Define a rule to return an illness's signs given its name
 
-; ---------------------  START: Detail Sickness   -----------------------------------------------
-
-(defrule find-illness
-
-	" Find signs and symptoms by illness name "
-	
-	?query <- (detail-illness)
-=>
-	(printout t crlf 
-		    "What illness are you searching for? " crlf
-		    "Answer: ")
-	
-	(bind ?illness (read))             
-				            
-	(bind ?illness (upcase ?illness))
-	
-	(if (eq ?illness INFLUENZA)
-	    then 
-		(assert (print-illness Influenza fever fatigue cough aches))
-            else
-	        (if (eq ?illness PNEUMONIA)
-		    then
-			(assert (print-illness Pneumonia breathing pain fever cough))
-		    else
-			(if (eq ?illness DIABETES)
-			    then
-				(assert (print-illness Diabetes thirst "weight loss" fatigue dizziness))
-		    	    else
-			        (if (eq ?illness ASTHMA)
-				    then
-				        (assert (print-illness Asthma wheezing breathless tightness cough))
-		    		     else
-			    	    	(if (eq ?illness MIGRAINE)
-					    then
-				        	(assert (print-illness Migraine "short sight" pain headache nausea))
-		    		     	    else
-			    	    		(if (eq ?illness HYPERTENSION)
-					  	    then
-				        		(assert (print-illness Hypertension headache dizziness fatigue "blurred vision"))
-		    		     	   	    else
-							(assert (print-illness Unknown nil nil nil nil))
-			    	    		)
-				
-			    	    	)
-			        )
-				
-			)
-	        )
-	)
-
-	(retract ?query)
-)
-
-(defrule print-illness 
-
-	" Detail an illness's symptoms and signs "
-
-	?query <- (print-illness ?name ?sign1 ?sign2 ?symp1 ?symp2)
-=>
-	(if (neq ?name Unknown)
-	    then
-		(printout t crlf
-			    "------------------------------------------------" 
-			    crlf
-			    " " ?name crlf
-			    " Signs: " ?sign1 
-		    	    " and " ?sign2 "." 
-			    crlf
-			    " Symptoms: " ?symp1 
-		    	    " and " ?symp2 "." 
-			    crlf
-			    "------------------------------------------------" 
-			    crlf crlf)
-	    else
-		(printout t crlf 
-			    "------------------------------------------------" 
-			    crlf
-			    " Illness not found."
-			    crlf
-			    "------------------------------------------------" 
-			    crlf crlf)
-		
-	)
-	
-	(retract ?query)
-)
-
-
-; ---------------------  END: Detail Sickness   -----------------------------------------------
-
-
-; ----------------------  START: Detail Signs   -----------------------------------------------
 
 (defrule find-signs
-
-	" Find signs by illness name "
 	
 	?query <- (detail-signs)
 =>
@@ -329,14 +179,137 @@
 	(retract ?query)
 )
 
-; ------------------------  END: Detail Signs   ------------------------------------------------
 
 
-; ------------------------  START: Delete Illness   -------------------------------------------
+;; Define a rule to print (formatted) an illness and its symptoms/signs
+
+
+(defrule print-values 
+
+	?query <- (print-vals ?name ?val1 ?val2)
+=>
+	(if (neq ?name Unknown)
+	    then
+		(printout t crlf
+			    "------------------------------------------------" 
+			    crlf
+			    " " ?name 
+			    " presents: " ?val1 
+		    	    " and " ?val2 "." 
+			    crlf
+			    "------------------------------------------------" 
+			    crlf crlf)
+	    else
+		(printout t crlf 
+			    "------------------------------------------------" 
+			    crlf
+			    " Illness not found."
+			    crlf
+			    "------------------------------------------------" 
+			    crlf crlf)
+		
+	)
+	
+	(retract ?query)
+)
+
+
+
+;; Define a rule to return an illness's full information given its name
+
+
+(defrule find-illness
+	
+	?query <- (detail-illness)
+=>
+	(printout t crlf 
+		    "What illness are you searching for? " crlf
+		    "Answer: ")
+	
+	(bind ?illness (read))             
+				            
+	(bind ?illness (upcase ?illness))
+	
+	(if (eq ?illness INFLUENZA)
+	    then 
+		(assert (print-illness Influenza fever fatigue cough aches))
+            else
+	        (if (eq ?illness PNEUMONIA)
+		    then
+			(assert (print-illness Pneumonia breathing pain fever cough))
+		    else
+			(if (eq ?illness DIABETES)
+			    then
+				(assert (print-illness Diabetes thirst "weight loss" fatigue dizziness))
+		    	    else
+			        (if (eq ?illness ASTHMA)
+				    then
+				        (assert (print-illness Asthma wheezing breathless tightness cough))
+		    		     else
+			    	    	(if (eq ?illness MIGRAINE)
+					    then
+				        	(assert (print-illness Migraine "short sight" pain headache nausea))
+		    		     	    else
+			    	    		(if (eq ?illness HYPERTENSION)
+					  	    then
+				        		(assert (print-illness Hypertension headache dizziness fatigue "blurred vision"))
+		    		     	   	    else
+							(assert (print-illness Unknown nil nil nil nil))
+			    	    		)
+				
+			    	    	)
+			        )
+				
+			)
+	        )
+	)
+
+	(retract ?query)
+)
+
+
+
+;; Define a rule to print (formatted) an illness's full information
+
+
+(defrule print-illness 
+
+	?query <- (print-illness ?name ?sign1 ?sign2 ?symp1 ?symp2)
+=>
+	(if (neq ?name Unknown)
+	    then
+		(printout t crlf
+			    "------------------------------------------------" 
+			    crlf
+			    " " ?name crlf
+			    " Signs: " ?sign1 
+		    	    " and " ?sign2 "." 
+			    crlf
+			    " Symptoms: " ?symp1 
+		    	    " and " ?symp2 "." 
+			    crlf
+			    "------------------------------------------------" 
+			    crlf crlf)
+	    else
+		(printout t crlf 
+			    "------------------------------------------------" 
+			    crlf
+			    " Illness not found."
+			    crlf
+			    "------------------------------------------------" 
+			    crlf crlf)
+		
+	)
+	
+	(retract ?query)
+)
+
+
+
+;; Define a rule to delete a sickness
+
 
 (defrule delete-sickness 
-
-	" Delete an illness "
 
 	?factId <- (delete-illness)
 =>
@@ -360,13 +333,3 @@
 	            crlf crlf)
 )
 
-; --------------------------  END: Delete Sickness   --------------------------------------------
-
-
-(rules)
-
-(assert (start-program)) ; to start the program
-
-(run)
- 
-(facts)

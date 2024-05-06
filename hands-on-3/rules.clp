@@ -1,12 +1,8 @@
-; Hands-on 3
 
-(clear)
+;; Define a rule to start decision tree by choosing first sign of illness
 
-; --------------------------------------------START: Start of program ---------------------------------------
 
 (defrule start-diagnosis
-
-	" Start the program "
 
 	?start <- (start-diagnosis)
 =>
@@ -42,14 +38,12 @@
 	(retract ?start)                  ; delete the starter fact
 ) 
 
-; ---------------------------------------------END: Start of program
 
 
-; ------------------------------------------- START: PATH 1 Sign1 is Fever ----------------------------------------------
+;; Define a rule to decide when the first sign is fever
+
 
 (defrule sign1-fever
-
-	" The first sign is fever "
 	
 	?sign1 <- (sign-1 A) ; save fact adress of fact to delete it later
 =>
@@ -69,6 +63,11 @@
 	
 	(retract ?sign1) 
 )
+
+
+
+;; Define a rule to decide when the first sign is fever but symptom 2 isn't cough
+
 
 (defrule sign1-symp2-fever
 
@@ -93,14 +92,12 @@
 	(retract ?sign2)
 )
 
-; ---------------------------------- END : PATH 1 ----------------------------------------------
 
 
-; --------------------------- START : PATH 2 Sign1 is Headache -----------------------------------
+;; Define a rule to decide when the first sign is headache
+
 
 (defrule sign1-headache
-
-	" The first sign is headache "
 	
 	?sign1 <- (sign-1 B) 
 =>
@@ -121,9 +118,12 @@
 	(retract ?sign1) 
 )
 
-(defrule sign1-sign2-headache
 
-	" Sign 1 is headache but sign 2 isn't pain " 
+
+;; Define a rule to decide when the first sign is headache but sign 2 isn't pain 
+
+
+(defrule sign1-sign2-headache
 
 	?sign2 <- (sign1-sign2 headache pain-no)
 =>
@@ -145,13 +145,11 @@
 )
 
 
-; ---------------------------------- END : PATH 2 ----------------------------------------------
 
-; --------------------------- START : PATH 3 Sign1 is Hard Breathing -----------------------------
+;; Define a rule to decide when the first sign is hard-breathing
+
 
 (defrule sign1-hard-breathing
-
-	" The first sign is hard-breathing "
 	
 	?sign1 <- (sign-1 C) 
 =>
@@ -172,9 +170,12 @@
 	(retract ?sign1) 
 )
 
-(defrule sign1-symp1-breathing
 
-	" Sign 1 is hard breathing but symptom 2 isn't fever " 
+
+;; Define a rule to decide when the first sign is hard-breathing but symptom 2 isn't fever
+
+
+(defrule sign1-symp1-breathing
 
 	?sign2 <- (sign1-symp1 breathing fever-no)
 =>
@@ -195,14 +196,12 @@
 	(retract ?sign2)
 )
 
-; --------------------------- END : PATH 3 Sign1 is Hard Breathing -------------------------------
 
 
-; --------------------------- START : PATH 4 Thirst wheezing short sight -------------------------
+;; Define a rule to decide when the first sign is thirst, wheezing or short sight
+
 
 (defrule sign1-thirst-wheezing-sight
-
-	" The first sign is thirst, wheezing or short sight "
 	
 	?sign1 <- (sign-1 ?sign&D|E|F) ; Connective constraint allows any group of values to match
 =>
@@ -223,9 +222,12 @@
 	(retract ?sign1) 
 )
 
-(defrule sign1-sign2-thirst1
 
-	" Sign 2 is thirst, wheezing or short sight but symptom 2 isn't weight loss " 
+
+;; Define a rule to decide when the first sign is thirst, wheezing or short sight but symptom 2 isn't weight loss
+
+
+(defrule sign1-sign2-thirst1
 
 	?sign2 <- (sign1-sign2 thirst weight-no)
 =>
@@ -246,9 +248,12 @@
 	(retract ?sign2)
 )
 
-(defrule sign1-sign2-thirst2
 
-	" Sign 2 is thirst, wheezing or short sight but symptom 2 isn't breathlessness " 
+
+;; Define a rule to decide when the first sign is thirst, wheezing or short sight but symptom 2 isn't breathlessness
+
+
+(defrule sign1-sign2-thirst2
 
 	?sign2 <- (sign1-sign2 thirst breath-no)
 =>
@@ -269,11 +274,10 @@
 	(retract ?sign2)
 )
 
-; --------------------------- END : PATH 4 Thirst wheezing short sight ---------------------------
 
 
+;; Define a rule to print (formatted) the final diagnosis given the decisions
 
-; ---------------------------------- START: RESULT DIAGNOSIS -------------------------------------
 
 (defrule final-diagnosis
 
@@ -309,20 +313,5 @@
 	
 	(retract ?diagnosis)
 )
-
-; ----------------------------------------- END: FINAL DIAGNOSIS ----------------------------------------------	
-	
-
-
-(assert (start-diagnosis))
-
-(run)
-
-
-
-
-
-
-
 
 
